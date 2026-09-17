@@ -1,0 +1,21 @@
+name: Build D20 Dice for Windows
+on:
+  workflow_dispatch:
+  push:
+    paths: ['src/**','scripts/**','installer/**','.github/workflows/build-windows.yml']
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build plugin
+        shell: pwsh
+        run: ./scripts/build-ci.ps1
+      - name: Compile installer
+        shell: pwsh
+        run: "& 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' 'installer\d20-dice.iss'"
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: D20Dice-Setup
+          path: dist/D20Dice-Setup.exe
